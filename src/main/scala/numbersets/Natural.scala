@@ -14,6 +14,10 @@ trait Natural extends Ordered[Natural] {
   def +(x:Natural):Natural
   def -(x:Natural):Natural
   def *(x:Natural):Natural
+
+  def /(x: Natural): Natural
+
+  def %(x: Natural): Natural
   override def compare(that: Natural): Int = Try(this-that).getOrElse(return -1) match {
     case Zero => 0
     case x : NaturalNumber => 1
@@ -27,13 +31,20 @@ trait Natural extends Ordered[Natural] {
   * Representation of 0 as a natural number
   */
 object Zero extends Natural {
+
   def +(x:Natural) = x
+
   def -(x:Natural) = x match {
     case Zero => Zero
     case _ => throw NotANaturalNumber()
   }
   def *(x:Natural) = Zero
+
+  def %(x: Natural) = Zero
+
   implicit def toInt = 0
+
+  def /(x: Natural) = Zero
 }
 
 /**
@@ -41,7 +52,9 @@ object Zero extends Natural {
   * @param predecessor predecessing number
   */
 class NaturalNumber(private val predecessor:Natural) extends Natural {
+
   def +(x:Natural) = this.predecessor+x.successor
+
   def *(x:Natural) = {
     def product(acc:Natural,n:Natural):Natural = n match {
         case Zero => acc
@@ -49,10 +62,30 @@ class NaturalNumber(private val predecessor:Natural) extends Natural {
       }
     product(Zero,x)
   }
+
+  def /(x: Natural) = {
+    def div(remainder: Natural, acc: Natural): Natural = {
+      if (remainder < x) acc
+      else div(remainder - x, acc.successor)
+    }
+    if (x == Zero) throw NotANaturalNumber()
+    div(this, Zero)
+  }
+
+  def %(x: Natural) = {
+    def mod(acc: Natural): Natural = {
+      if (acc < x) acc
+      else mod(acc - x)
+    }
+    if (x == Zero) throw NotANaturalNumber()
+    mod(this)
+  }
+
   def -(x:Natural) = x match {
     case Zero => this
     case x : NaturalNumber => predecessor - x.predecessor
   }
+
   implicit def toInt = {
     def natVal(n: Natural, x: Int): Int = n match {
       case Zero => x
@@ -60,6 +93,7 @@ class NaturalNumber(private val predecessor:Natural) extends Natural {
     }
     natVal(this, 0)
   }
+
   override def equals(o: scala.Any): Boolean = o match {
     case n : NaturalNumber => this.compare(n) == 0
     case _ => false

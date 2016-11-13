@@ -10,3 +10,5 @@ n2==n2
 n2<n4
 n2>n4
 val nz:Natural = Natural(10)+Natural(12)
+Natural(12) / Natural(1)
+Natural(12) % Natural(8)
