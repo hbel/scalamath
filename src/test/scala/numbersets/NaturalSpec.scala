@@ -1,6 +1,7 @@
 package numbersets
 
 import org.scalatest._
+import NaturalImplicits._
 
 /**
   * Created by hendrik on 12.11.16.
@@ -9,18 +10,17 @@ class NaturalSpec extends FlatSpec with Matchers {
   "A natural number" should "be displayable and convertable" in {
     val n1 = Natural(10)
     n1.toString should be ("10")
-    n1.toInt should be(10)
+    val nli: Int = n1
+    nli should be(10)
     val n2 = Natural(2)
     n2.toString should be ("2")
-    n2.toInt should be(2)
     val z1 = Zero
     z1.toString should be ("0")
-    z1.toInt should be(0)
     val z2 = Natural(0)
     z2.toString should be ("0")
-    z2.toInt should be(0)
     Zero.toInt should be(0)
-    Natural(25).toInt should be(25)
+    val i: Int = Natural(25)
+    i should be(25)
   }
 
   "Two numbers" should "be addable" in {
