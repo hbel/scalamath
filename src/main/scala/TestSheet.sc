@@ -1,14 +1,15 @@
 import numbersets._
+import IntegralImplicits.
+_
 
-val n2:Natural = Natural(2)
-val n4:Natural = Natural(4)
-val n6:Natural = n2+n4
-val n8 = n6-n6
-val n1 = n6-Natural(5)
-val n22 = n6-n4
-n2==n2
-n2<n4
-n2>n4
-val nz:Natural = Natural(10)+Natural(12)
-Natural(12) / Natural(1)
-Natural(12) % Natural(8)
+val z1: Integral = 10
+val z2 = Integral(0)
+val z3 = Integral(-15)
+z2 + z3
+z2 + z1
+z1 + z3
+z1 + z2
+z1 - z3
+z3 - z1
+-z1
+-z3

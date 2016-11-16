@@ -35,6 +35,14 @@ class RationalSpec extends FlatSpec with Matchers {
     Rational(3, 4).inv.toString should be("4/3")
   }
 
+  it should "be negatable" in {
+    val n1 = Rational(1, 2)
+    val n2 = -n1
+    n2.toString should be("-1/2")
+    val n3 = -n2
+    n3.toString should be("1/2")
+  }
+
   it should "be addable with Rationals and Ints" in {
     (Rational(1, 2) + 2).toString should be("5/2")
     (Rational(1, 2) + Rational(2, 3)).toString should be("7/6")
@@ -55,7 +63,7 @@ class RationalSpec extends FlatSpec with Matchers {
   }
 
   it should "throw an exception on a division by zero" in {
-    a[ArithmeticException] should be thrownBy {
+    a[IllegalArgumentException] should be thrownBy {
       Rational(4, 0)
     }
     a[ArithmeticException] should be thrownBy {

@@ -14,25 +14,29 @@ object RationalImplicits {
 /**
   * Class representing rational numbers
   */
-class Rational(private val numerator: Int, private val denominator: Int = 1) extends Ordered[Rational] {
-  if (denominator == 0) throw new ArithmeticException("Denominator can't be zero!")
-  val n = numerator / gcd(numerator, denominator)
-  val d = denominator / gcd(numerator, denominator)
+class Rational(numerator: Int, denominator: Int = 1) extends Ordered[Rational] {
+  require(denominator != 0)
+
+  import Math.abs
+
+  private val g = gcd(abs(numerator), abs(denominator))
+  val n = numerator / g
+  val d = denominator / g
 
   private def gcd(a: Int, b: Int): Int = {
-    import Math.abs
-    val (x, y) = if (abs(a) > abs(b)) (b, a) else (a, b)
-    if (x == 0) abs(y)
-    else gcd(x, y % x)
+    if (b == 0) a
+    else gcd(b, a % b)
   }
 
   def inv: Rational = new Rational(d, n)
+
+  def unary_-(): Rational = new Rational(-n, d)
 
   def *(that: Rational): Rational = new Rational(this.n * that.n, this.d * that.d)
 
   def +(that: Rational): Rational = new Rational(this.n * that.d + that.n * this.d, this.d * that.d)
 
-  def -(that: Rational): Rational = this + Rational(that.n * -1, that.d)
+  def -(that: Rational): Rational = this + (-that)
 
   def /(that: Rational): Rational = {
     if (that.n == 0) throw new ArithmeticException("Division by zero!")
@@ -45,7 +49,7 @@ class Rational(private val numerator: Int, private val denominator: Int = 1) ext
 
   override def equals(o: scala.Any): Boolean = o match {
     case i: Int => n == i && d == 1
-    case r: Rational => n == r.n && d == r.d
+    case Rational(rn, rd) => n == rn && d == rd
     case _ => false
   }
 
@@ -63,4 +67,6 @@ class Rational(private val numerator: Int, private val denominator: Int = 1) ext
   */
 object Rational {
   def apply(n: Int, d: Int) = new Rational(n, d)
+
+  def unapply(arg: Rational): Option[(Int, Int)] = Some(arg.n, arg.d)
 }
