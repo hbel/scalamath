@@ -1,3 +1,5 @@
+scalacOptions ++= Seq("-explaintypes", "-language:implicitConversions", "-feature")
+
 lazy val root = (project in file(".")).
 	settings(
 		name := "scalamath",
