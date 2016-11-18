@@ -1,6 +1,4 @@
-package numbersets
-
-import scala.Option
+package hb.math.numbersets
 
 /**
   * Implicit conversions for Rational
@@ -35,7 +33,7 @@ class Rational(numerator: Integer, denominator: Integer = Integer(1)) extends Or
     else gcd(b, a % b)
   }
 
-  def inv: Rational = new Rational(d, n)
+  def reciprocal: Rational = new Rational(d, n)
 
   def unary_-(): Rational = new Rational(-n, d)
 
@@ -47,7 +45,7 @@ class Rational(numerator: Integer, denominator: Integer = Integer(1)) extends Or
 
   def /(that: Rational): Rational = {
     if (that.n == IntegerZero) throw new ArithmeticException("Division by zero!")
-    this * that.inv
+    this * that.reciprocal
   }
 
   override def toString: String = if (d != Integer(1)) s"$n/$d" else s"$n"

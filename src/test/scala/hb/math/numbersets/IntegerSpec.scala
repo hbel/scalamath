@@ -1,6 +1,6 @@
-package numbersets
+package hb.math.numbersets
 
-import numbersets.IntegerImplicits._
+import IntegerImplicits._
 import org.scalatest._
 
 /**

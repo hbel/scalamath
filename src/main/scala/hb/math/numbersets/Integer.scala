@@ -1,4 +1,4 @@
-package numbersets
+package hb.math.numbersets
 
 /**
   * Implicit conversions between Integral and Int
@@ -9,8 +9,8 @@ object IntegerImplicits {
   implicit def integerToInt(nat: Integer): Int = {
     def natVal(n: Integer, x: Int = 0): Int = n match {
       case IntegerZero => x
-      case p: PositiveNumber => natVal(p.predecessor, x + 1)
-      case n: NegativeNumber => natVal(n.successor, x - 1)
+      case PositiveNumber(pred) => natVal(pred, x + 1)
+      case NegativeNumber(succ) => natVal(succ, x - 1)
     }
     natVal(nat)
   }
@@ -38,11 +38,7 @@ trait Integer extends Ordered[Integer] {
 
   override def toString: String = IntegerImplicits.integerToInt(this).toString
 
-  override def compare(that: Integer): Int = this - that match {
-    case IntegerZero => 0
-    case p: PositiveNumber => 1
-    case _ => -1
-  }
+  override def compare(that: Integer): Int = IntegerImplicits.integerToInt(this - that)
 }
 
 /**
@@ -59,8 +55,9 @@ object IntegerZero extends Integer {
 
   def %(x: Integer) = IntegerZero
 
-  def successor = new PositiveNumber(this)
-  def predecessor = new NegativeNumber(this)
+  def successor = PositiveNumber(this)
+
+  def predecessor = NegativeNumber(this)
   def unary_- = this
 }
 
@@ -111,12 +108,10 @@ trait IntegerNumber extends Integer {
 /**
   * Positive integer
   *
-  * @param p predecessor integer
+  * @param predecessor predecessor integer
   */
-class PositiveNumber(p: Integer) extends IntegerNumber {
-  def successor = new PositiveNumber(this)
-
-  def predecessor = p
+case class PositiveNumber(predecessor: Integer) extends IntegerNumber {
+  def successor = PositiveNumber(this)
 
   def selector(i: Integer) = i.predecessor
 
@@ -142,12 +137,10 @@ class PositiveNumber(p: Integer) extends IntegerNumber {
 /**
   * Negative integer
   *
-  * @param s successor integer
+  * @param successor successor integer
   */
-class NegativeNumber(s: Integer) extends IntegerNumber {
-  def successor = s
-
-  def predecessor = new NegativeNumber(this)
+case class NegativeNumber(successor: Integer) extends IntegerNumber {
+  def predecessor = NegativeNumber(this)
 
   def selector(i: Integer) = i.successor
 

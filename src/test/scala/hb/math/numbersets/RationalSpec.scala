@@ -1,4 +1,4 @@
-package numbersets
+package hb.math.numbersets
 
 import org.scalatest._
 import IntegerImplicits._
@@ -32,8 +32,8 @@ class RationalSpec extends FlatSpec with Matchers {
   }
 
   it should "provide the inverted rational b/a" in {
-    Rational(1, 2).inv.toString should be("2")
-    Rational(3, 4).inv.toString should be("4/3")
+    Rational(1, 2).reciprocal.toString should be("2")
+    Rational(3, 4).reciprocal.toString should be("4/3")
   }
 
   it should "be negatable" in {

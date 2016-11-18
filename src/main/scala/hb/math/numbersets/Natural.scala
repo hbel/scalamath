@@ -1,9 +1,9 @@
-package numbersets
+package hb.math.numbersets
 
 import scala.util.Try
 
 /**
-  * Implicit conversion from Ints to Natural numbers
+  * Implicit conversion between Ints and Natural numbers
   */
 object NaturalImplicits {
   implicit def fromInt(i: Int): Natural = Natural(i)
@@ -11,7 +11,7 @@ object NaturalImplicits {
   implicit def toInt(nat: Natural): Int = {
     def natVal(n: Natural, x: Int): Int = n match {
       case Zero => x
-      case n: NaturalNumber => natVal(n.predecessor, x + 1)
+      case NaturalNumber(pred) => natVal(pred, x + 1)
     }
     natVal(nat, 0)
   }
@@ -26,21 +26,22 @@ case class NotANaturalNumber() extends Exception("Not a natural number")
   * Trait for natural numbers
   */
 trait Natural extends Ordered[Natural] {
-  def +(x: Natural): Natural
+  def +(that: Natural): Natural
 
-  def -(x: Natural): Natural
+  def -(that: Natural): Natural
 
-  def *(x: Natural): Natural
+  def *(that: Natural): Natural
 
-  def /(x: Natural): Natural
-  def %(x: Natural): Natural
+  def /(that: Natural): Natural
+
+  def %(that: Natural): Natural
 
   override def compare(that: Natural): Int = Try(this-that).getOrElse(return -1) match {
     case Zero => 0
     case x : NaturalNumber => 1
   }
 
-  def successor:Natural = new NaturalNumber(this)
+  def successor: Natural = NaturalNumber(this)
 
   override def toString = NaturalImplicits.toInt(this) toString
 }
@@ -50,57 +51,53 @@ trait Natural extends Ordered[Natural] {
   */
 object Zero extends Natural {
 
-  def +(x:Natural) = x
+  def +(that: Natural) = that
 
-  def -(x:Natural) = x match {
+  def -(that: Natural) = that match {
     case Zero => Zero
     case _ => throw NotANaturalNumber()
   }
 
-  def *(x:Natural) = Zero
+  def *(that: Natural) = Zero
 
-  def %(x: Natural) = Zero
+  def %(that: Natural) = Zero
 
-  def /(x: Natural) = Zero
+  def /(that: Natural) = Zero
 }
 
 /**
   * Representation of natural numbers other than 0
   * @param predecessor predecessing number
   */
-class NaturalNumber(val predecessor: Natural) extends Natural {
+case class NaturalNumber(predecessor: Natural) extends Natural {
 
-  def +(x:Natural) = this.predecessor+x.successor
+  def +(x: Natural) = this.predecessor + x.successor
 
   def *(x:Natural) = {
-    def product(acc:Natural,n:Natural):Natural = n match {
-        case Zero => acc
-        case n:NaturalNumber => product(this+acc, n.predecessor)
-      }
-    product(Zero,x)
+    def product(n: Natural, acc: Natural = Zero): Natural = n match {
+      case Zero => acc
+      case NaturalNumber(pred) => product(pred, this + acc)
+    }
+    product(x)
   }
 
-  def /(x: Natural) = {
-    def div(remainder: Natural, acc: Natural): Natural = {
-      if (remainder < x) acc
-      else div(remainder - x, acc.successor)
-    }
-    if (x == Zero) throw NotANaturalNumber()
+  def /(that: Natural) = {
+    def div(rest: Natural, acc: Natural): Natural = if (rest < that) acc else div(rest - that, acc.successor)
+
+    if (that == Zero) throw NotANaturalNumber()
     div(this, Zero)
   }
 
-  def %(x: Natural) = {
-    def mod(acc: Natural): Natural = {
-      if (acc < x) acc
-      else mod(acc - x)
-    }
-    if (x == Zero) throw NotANaturalNumber()
+  def %(that: Natural) = {
+    def mod(acc: Natural): Natural = if (acc < that) acc else mod(acc - that)
+
+    if (that == Zero) throw NotANaturalNumber()
     mod(this)
   }
 
-  def -(x:Natural) = x match {
+  def -(that: Natural) = that match {
     case Zero => this
-    case x : NaturalNumber => predecessor - x.predecessor
+    case NaturalNumber(pred) => predecessor - pred
   }
 
   override def equals(o: scala.Any): Boolean = o match {
@@ -114,10 +111,10 @@ class NaturalNumber(val predecessor: Natural) extends Natural {
   */
 object Natural {
   def apply(x:Int) = {
-    def sum(x:Int,n:Natural):Natural = x match {
+    def sum(x: Int, n: Natural = Zero): Natural = x match {
       case 0 => n
       case _ => sum(x-1,n.successor)
     }
-    sum(x,Zero)
+    sum(x)
   }
 }

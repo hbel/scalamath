@@ -1,4 +1,4 @@
-package numbersets
+package hb.math.numbersets
 
 import org.scalatest._
 import NaturalImplicits._
