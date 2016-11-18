@@ -1,4 +1,4 @@
-scalacOptions ++= Seq("-explaintypes", "-language:implicitConversions", "-feature")
+scalacOptions ++= Seq("-explaintypes", "-language:implicitConversions", "-language:postfixOps", "-feature")
 
 lazy val root = (project in file(".")).
 	settings(
