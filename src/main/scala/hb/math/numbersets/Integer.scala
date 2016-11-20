@@ -58,7 +58,8 @@ object IntegerZero extends Integer {
   def successor = PositiveNumber(this)
 
   def predecessor = NegativeNumber(this)
-  def unary_- = this
+  
+  val unary_- = this
 }
 
 /**

@@ -35,7 +35,7 @@ class Rational(numerator: Integer, denominator: Integer = Integer(1)) extends Or
 
   def reciprocal: Rational = new Rational(d, n)
 
-  def unary_-(): Rational = new Rational(-n, d)
+  def unary_- : Rational = new Rational(-n, d)
 
   def *(that: Rational): Rational = new Rational(this.n * that.n, this.d * that.d)
 
